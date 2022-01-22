@@ -7,82 +7,20 @@
  *
  */
 
-use std::collections::HashMap;
+// use num_traits::zero;
 
-mod turing_machine;
+mod conway;
 
 fn main() {
-    let mut tm: turing_machine::TuringMachine = turing_machine::TuringMachine::new(
-        String::from("A"),
-        HashMap::from([
-            (
-                String::from("A"),
-                HashMap::from([
-                    (
-                        String::from("0"),
-                        (
-                            String::from("1"),
-                            turing_machine::Move::R,
-                            String::from("B")
-                        )
-                    ),
-                    (
-                        String::from("1"),
-                        (
-                            String::from("1"),
-                            turing_machine::Move::R,
-                            String::from("HALT")
-                        )
-                    )
-                ])
-            ),
-            (
-                String::from("B"),
-                HashMap::from([
-                    (
-                        String::from("0"),
-                        (
-                            String::from("1"),
-                            turing_machine::Move::L,
-                            String::from("B")
-                        )
-                    ),
-                    (
-                        String::from("1"),
-                        (
-                            String::from("0"),
-                            turing_machine::Move::R,
-                            String::from("C")
-                        )
-                    )
-                ])
-            ),
-            (
-                String::from("C"),
-                HashMap::from([
-                    (
-                        String::from("0"),
-                        (
-                            String::from("1"),
-                            turing_machine::Move::L,
-                            String::from("C")
-                        )
-                    ),
-                    (
-                        String::from("1"),
-                        (
-                            String::from("1"),
-                            turing_machine::Move::L,
-                            String::from("A")
-                        )
-                    )
-                ])
-
-            ),
-        ]),
-        turing_machine::Tape::new()
+    let mut con: conway::Conway = conway::Conway::new(
+        num_traits::zero(),
+        vec![
+            vec![false, false, false],
+            vec![false, false, false],
+            vec![false, false, false],
+        ],
     );
-    println!("{:?}", tm);
-    tm.run();
-    println!("{:?}", tm);
+    println!("{:?}", con);
+    con.next_generation();
+    println!("{:?}", con);
 }
