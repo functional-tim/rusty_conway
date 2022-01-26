@@ -27,7 +27,7 @@ impl Conway {
     }
 
     pub fn next_generation(&mut self) {
-        self.generation += 1 as usize;
+        self.generation += 1_usize;
 
         let mut vec: Vec<(usize, usize)> = Vec::new();
         for y in 0..self.size {
@@ -62,7 +62,7 @@ impl Conway {
                 for (iy, ix) in yxvec {
                     count += if self.grid[iy][ix] { 1 } else { 0 };
                 }
-                if (count < 2 || count > 3) && self.grid[y][x] {
+                if !(2..=3).contains(&count) && self.grid[y][x] {
                     vec.push((y, x));
                 }
                 if count == 3 && !self.grid[y][x] {
@@ -75,29 +75,28 @@ impl Conway {
         }
     }
 
-    pub fn run(&mut self, steps: usize) {
+    pub fn run(&mut self, steps: usize, pr: bool) {
         let mut s = steps;
         while s > 0 {
             s -= 1;
             self.next_generation();
+            if pr {
+                println!("{}", self);
+            }
         }
     }
 }
 
 impl fmt::Display for Conway {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let gen = &self.generation;
         let vec = &self.grid;
-        write!(f, "Generation: {}\n\n", gen)?;
+        write!(f, "Generation: {}\n\n", &self.generation)?;
         for vy in vec.iter() {
-            for (count1, vx) in vy.iter().enumerate() {
-                if count1 != 0 {
-                    write!(f, " ")?;
-                }
-                write!(f, "{}", if *vx { "1" } else { "0" })?;
+            for (_count, vx) in vy.iter().enumerate() {
+                write!(f, "{}", if *vx { "◼" } else { "◻" })?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
-        write!(f, "")
+        writeln!(f)
     }
 }

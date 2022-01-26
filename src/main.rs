@@ -25,6 +25,5 @@ fn main() {
         6,
     );
     println!("{}", con);
-    con.run(10);
-    println!("{}", con);
+    con.run(10, true);
 }
