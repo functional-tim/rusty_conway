@@ -18,9 +18,7 @@ mod conway;
 
 /// Struct for the parameters of the app.
 #[derive(Debug, StructOpt)]
-#[structopt(
-    name = "rusty-conway",
-)]
+#[structopt(name = "rusty-conway")]
 struct Opt {
     /// Input file
     #[structopt(parse(from_os_str))]
@@ -59,17 +57,11 @@ fn main() {
             exit(c);
         }
     };
-    let grid: Vec<Vec<bool>> = file.into_iter().map(|x| x
-        .chars()
-        .map(|y| y == '1')
-        .collect()
-    )
-    .collect();
-    let mut con: conway::Conway = conway::Conway::new(
-        Zero::zero(),
-        grid.clone(),
-        grid.len()
-    );
+    let grid: Vec<Vec<bool>> = file
+        .into_iter()
+        .map(|x| x.chars().map(|y| y == '1').collect())
+        .collect();
+    let mut con: conway::Conway = conway::Conway::new(Zero::zero(), grid.clone(), grid.len());
     println!("{}", con);
-    con.run(opt.number, true);
+    con.run(opt.number, opt.print);
 }
