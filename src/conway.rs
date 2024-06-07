@@ -14,11 +14,11 @@ use std::fmt;
 pub struct Conway {
     generation: BigUint,
     grid: Vec<Vec<bool>>,
-    size: usize,
+    size: (usize, usize),
 }
 
 impl Conway {
-    pub fn new(gen: BigUint, gri: Vec<Vec<bool>>, siz: usize) -> Conway {
+    pub fn new(gen: BigUint, gri: Vec<Vec<bool>>, siz: (usize, usize)) -> Conway {
         Conway {
             generation: gen,
             grid: gri,
@@ -30,24 +30,24 @@ impl Conway {
         self.generation += 1_usize;
 
         let mut vec: Vec<(usize, usize)> = Vec::new();
-        for y in 0..self.size {
-            for x in 0..self.size {
+        for y in 0..self.size.1 {
+            for x in 0..self.size.0 {
                 let mut count = 0;
 
-                let yvec = if y > 0 && y < self.size - 1 {
+                let yvec = if y > 0 && y < self.size.1 - 1 {
                     vec![y - 1, y, y + 1]
                 } else if y > 0 {
                     vec![y - 1, y]
-                } else if y < self.size - 1 {
+                } else if y < self.size.1 - 1 {
                     vec![y, y + 1]
                 } else {
                     vec![y]
                 };
-                let xvec = if x > 0 && x < self.size - 1 {
+                let xvec = if x > 0 && x < self.size.0 - 1 {
                     vec![x - 1, x, x + 1]
                 } else if x > 0 {
                     vec![x - 1, x]
-                } else if x < self.size - 1 {
+                } else if x < self.size.0 - 1 {
                     vec![x, x + 1]
                 } else {
                     vec![x]
@@ -92,7 +92,7 @@ impl fmt::Display for Conway {
         let vec = &self.grid;
         write!(f, "Generation: {}\n\n", &self.generation)?;
         for vy in vec.iter() {
-            for (_count, vx) in vy.iter().enumerate() {
+            for vx in vy.iter() {
                 write!(f, "{}", if *vx { "◼" } else { "◻" })?;
             }
             writeln!(f)?;
