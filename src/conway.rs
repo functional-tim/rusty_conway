@@ -1,5 +1,5 @@
 /*
- * turingmachine.rs - Functions to simulate a turing machine.
+ * conway.rs - Functions to play Conway's Game of Life.
  *
  * (C) 2021 Tim Gravert <tim.gravert@web.de>
  *
@@ -7,18 +7,24 @@
  *
  */
 
+use mortal::{Color, Screen, Style, Theme, Terminal};
 use num_bigint::BigUint;
 use std::fmt;
+use std::{
+    io::{stdout, Write},
+    thread::sleep,
+    time::Duration,
+};
 
 #[derive(Clone, Debug)]
 pub struct Conway {
     generation: BigUint,
     grid: Vec<Vec<bool>>,
-    size: usize,
+    size: (usize, usize),
 }
 
 impl Conway {
-    pub fn new(gen: BigUint, gri: Vec<Vec<bool>>, siz: usize) -> Conway {
+    pub fn new(gen: BigUint, gri: Vec<Vec<bool>>, siz: (usize, usize)) -> Conway {
         Conway {
             generation: gen,
             grid: gri,
@@ -30,24 +36,24 @@ impl Conway {
         self.generation += 1_usize;
 
         let mut vec: Vec<(usize, usize)> = Vec::new();
-        for y in 0..self.size {
-            for x in 0..self.size {
+        for y in 0..self.size.1 {
+            for x in 0..self.size.0 {
                 let mut count = 0;
 
-                let yvec = if y > 0 && y < self.size - 1 {
+                let yvec = if y > 0 && y < self.size.1 - 1 {
                     vec![y - 1, y, y + 1]
                 } else if y > 0 {
                     vec![y - 1, y]
-                } else if y < self.size - 1 {
+                } else if y < self.size.1 - 1 {
                     vec![y, y + 1]
                 } else {
                     vec![y]
                 };
-                let xvec = if x > 0 && x < self.size - 1 {
+                let xvec = if x > 0 && x < self.size.0 - 1 {
                     vec![x - 1, x, x + 1]
                 } else if x > 0 {
                     vec![x - 1, x]
-                } else if x < self.size - 1 {
+                } else if x < self.size.0 - 1 {
                     vec![x, x + 1]
                 } else {
                     vec![x]
@@ -77,22 +83,51 @@ impl Conway {
 
     pub fn run(&mut self, steps: usize, pr: bool) {
         let mut s = steps;
+        let mut stdout = stdout();
+        let term = Terminal::new();
+        
         while s > 0 {
             s -= 1;
             self.next_generation();
+            let st = String::from(self.stringify());
+            
             if pr {
-                println!("{}", self);
+                stdout.flush().unwrap();
+                sleep(Duration::from_millis(100));
+                //term.as_ref().expect("REASON").write_str(&st);
+                write!(term.as_ref().expect("REASON"), "\r{}", self);
             }
         }
+    }
+    
+    pub fn stringify(&mut self) -> String {
+        let vec = &self.grid;
+        let mut s: String = String::from("");
+        
+        for vy in vec.iter() {
+            for (_count, vx) in vy.iter().enumerate() {
+                if *vx {
+                    s += "◼";
+                } else {
+                    s += "◻";
+                }
+            }
+            s += "\n";
+        }
+        
+        s += "\n";
+        
+        s
     }
 }
 
 impl fmt::Display for Conway {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        //write!(f, "{esc}[2J{esc}[1;1H", esc = 27 as char)?;
         let vec = &self.grid;
-        write!(f, "Generation: {}\n\n", &self.generation)?;
+        write!(f, "\rGeneration: {}\n\n", &self.generation)?;
         for vy in vec.iter() {
-            for (_count, vx) in vy.iter().enumerate() {
+            for vx in vy.iter() {
                 write!(f, "{}", if *vx { "◼" } else { "◻" })?;
             }
             writeln!(f)?;
