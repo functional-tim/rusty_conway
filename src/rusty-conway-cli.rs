@@ -11,7 +11,7 @@ use num_traits::Zero;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 use std::path::{Path, PathBuf};
-use std::process::{exit, ExitStatus};
+use std::process::ExitCode;
 use structopt::StructOpt;
 
 mod conway;
@@ -35,7 +35,7 @@ struct Opt {
 
 /// Auxiliary function to transform the input file into a Vector of single words.
 /// Input file has to be formatted in such a way that every word is on a single line.
-fn lines_from_file(filename: impl AsRef<Path>) -> Result<Vec<String>, (String, i32)> {
+fn lines_from_file(filename: impl AsRef<Path>) -> Result<Vec<String>, (String, u8)> {
     let file = match File::open(filename) {
         Ok(file) => file,
         Err(_) => return Err((String::from("no such file"), 2)),
@@ -48,20 +48,21 @@ fn lines_from_file(filename: impl AsRef<Path>) -> Result<Vec<String>, (String, i
 }
 
 /// Main program logic
-fn main() {
+fn main() -> ExitCode {
     let opt = Opt::from_args();
     let file = match lines_from_file(opt.file) {
         Ok(x) => x,
         Err((err, c)) => {
             eprintln!("Error: {}", err);
-            exit(c);
+            return ExitCode::from(c);
         }
     };
     let grid: Vec<Vec<bool>> = file
         .into_iter()
         .map(|x| x.chars().map(|y| y == '1').collect())
         .collect();
-    let mut con: conway::Conway = conway::Conway::new(Zero::zero(), grid.clone(), grid.len());
+    let mut con: conway::Conway = conway::Conway::new(Zero::zero(), grid.clone(), (grid[0].len(), grid.len()));
     println!("{}", con);
     con.run(opt.number, opt.print);
+    ExitCode::SUCCESS
 }

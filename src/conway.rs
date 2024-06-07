@@ -119,6 +119,8 @@ impl Conway {
         
         s
     }
+    
+    //pub fn output(&mut self) -> 
 }
 
 impl fmt::Display for Conway {

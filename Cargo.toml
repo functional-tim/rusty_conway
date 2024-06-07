@@ -14,11 +14,12 @@ categories = ["command-line-utilities"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-graphics = "0.44"
+#graphics = "0.44"
 mortal = "0.2.4"
 num-bigint = "0.4"
 num-traits = "0.2"
 structopt = "0.3"
+tiny-skia = "0.11"
 
 [[bin]]
 name = "rusty-conway-cli"
@@ -26,4 +27,4 @@ path = "src/rusty-conway-cli.rs"
 
 [[bin]]
 name = "rusty-conway"
-path = "src/rusty-conway"
+path = "src/rusty-conway.rs"
