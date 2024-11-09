@@ -1,5 +1,5 @@
 /*
- * turingmachine.rs - Functions to simulate a turing machine.
+ * conway.rs - Functions to simulate Conway's Game of Life.
  *
  * (C) 2021 Tim Gravert <tim.gravert@web.de>
  *
@@ -8,7 +8,7 @@
  */
 
 use num_bigint::BigUint;
-use std::fmt;
+use std::{fmt, thread, time};
 
 #[derive(Clone, Debug)]
 pub struct Conway {
@@ -83,6 +83,7 @@ impl Conway {
             if pr {
                 println!("{}", self);
             }
+            thread::sleep(time::Duration::from_millis(150));
         }
     }
 }

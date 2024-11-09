@@ -1,5 +1,5 @@
 /*
- * main.rs - Console program to simulate a turing machine.
+ * main.rs - Console program to simulate Conway's Game of Life.
  *
  * (C) 2021 Tim Gravert <tim.gravert@web.de>
  *
@@ -7,11 +7,12 @@
  *
  */
 
+use exitcode;
 use num_traits::Zero;
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 use std::path::{Path, PathBuf};
-use std::process::{exit, ExitStatus};
+use std::process::exit;
 use structopt::StructOpt;
 
 mod conway;
@@ -38,12 +39,12 @@ struct Opt {
 fn lines_from_file(filename: impl AsRef<Path>) -> Result<Vec<String>, (String, i32)> {
     let file = match File::open(filename) {
         Ok(file) => file,
-        Err(_) => return Err((String::from("no such file"), 2)),
+        Err(_) => return Err((String::from("no such file"), exitcode::NOINPUT)),
     };
     let buf = BufReader::new(file);
     match buf.lines().collect() {
         Ok(res) => Ok(res),
-        Err(_) => Err((String::from("file contained invalid UTF-8"), 101)),
+        Err(_) => Err((String::from("file contained invalid UTF-8"), exitcode::DATAERR)),
     }
 }
 
@@ -58,10 +59,17 @@ fn main() {
         }
     };
     let grid: Vec<Vec<bool>> = file
-        .into_iter()
-        .map(|x| x.chars().map(|y| y == '1').collect())
+        .iter()
+        .skip(1)
+        .map(|x| x
+            .chars()
+            .map(|y|
+            y == file[0].chars().next().unwrap()
+        ).collect()
+        )
         .collect();
     let mut con: conway::Conway = conway::Conway::new(Zero::zero(), grid.clone(), grid.len());
     println!("{}", con);
     con.run(opt.number, opt.print);
+    exit(exitcode::OK)
 }
