@@ -61,7 +61,8 @@ fn main() -> ExitCode {
         .into_iter()
         .map(|x| x.chars().map(|y| y == '1').collect())
         .collect();
-    let mut con: conway::Conway = conway::Conway::new(Zero::zero(), grid.clone(), (grid[0].len(), grid.len()));
+    let mut con: conway::Conway =
+        conway::Conway::new(Zero::zero(), grid.clone(), (grid[0].len(), grid.len()));
     println!("{}", con);
     con.run(opt.number, opt.print);
     ExitCode::SUCCESS

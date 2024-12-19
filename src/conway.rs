@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
  * conway.rs - Functions to simulate Conway's Game of Life.
-=======
- * conway.rs - Functions to play Conway's Game of Life.
->>>>>>> b3c22cf435182528949ab188a7e8eca022a5a0fe
  *
  * (C) 2021 Tim Gravert <tim.gravert@web.de>
  *
@@ -11,18 +7,15 @@
  *
  */
 
-use mortal::{Color, Screen, Style, Theme, Terminal};
+#[allow(unused_imports)]
+use mortal::{Color, Screen, Style, Terminal, Theme};
 use num_bigint::BigUint;
-<<<<<<< HEAD
 use std::{fmt, thread, time};
-=======
-use std::fmt;
 use std::{
     io::{stdout, Write},
     thread::sleep,
     time::Duration,
 };
->>>>>>> b3c22cf435182528949ab188a7e8eca022a5a0fe
 
 #[derive(Clone, Debug)]
 pub struct Conway {
@@ -93,28 +86,29 @@ impl Conway {
         let mut s = steps;
         let mut stdout = stdout();
         let term = Terminal::new();
-        
+
         while s > 0 {
             s -= 1;
             self.next_generation();
-            let st = String::from(self.stringify());
-            
+            #[allow(unused_variables)]
+            let st = self.stringify();
+
             if pr {
                 stdout.flush().unwrap();
                 sleep(Duration::from_millis(100));
                 //term.as_ref().expect("REASON").write_str(&st);
-                write!(term.as_ref().expect("REASON"), "\r{}", self);
+                let _ = write!(term.as_ref().expect("REASON"), "\r{}", self);
             }
             thread::sleep(time::Duration::from_millis(150));
         }
     }
-    
+
     pub fn stringify(&mut self) -> String {
         let vec = &self.grid;
         let mut s: String = String::from("");
-        
+
         for vy in vec.iter() {
-            for (_count, vx) in vy.iter().enumerate() {
+            for vx in vy.iter() {
                 if *vx {
                     s += "◼";
                 } else {
@@ -123,13 +117,13 @@ impl Conway {
             }
             s += "\n";
         }
-        
+
         s += "\n";
-        
+
         s
     }
-    
-    //pub fn output(&mut self) -> 
+
+    //pub fn output(&mut self) ->
 }
 
 impl fmt::Display for Conway {
