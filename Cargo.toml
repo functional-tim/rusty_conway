@@ -3,12 +3,12 @@ name = "rusty-conway"
 version = "0.1.0"
 authors = ["functional-tim <tim.gravert@web.de>"]
 edition = "2021"
-description = "Game of life simulator."
+description = "A simple Conway's game of life command line program. It is reasonably fast."
 readme = "README.md"
 homepage = "https://codeberg.org/functional-tim/rusty_conway"
 repository = "https://codeberg.org/functional-tim/rusty_conway"
 license = "MIT OR Apache-2.0"
-keywords = ["education", "conway", "Conway's game of life"]
+keywords = ["education", "conway", "game of life"]
 categories = ["command-line-utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
